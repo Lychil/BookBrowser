@@ -1,4 +1,5 @@
 import Layout from "@/common/components/Layout/Layout";
+import Home from "@/pages/Home/Home";
 import {
     createBrowserRouter,
     createRoutesFromElements,
@@ -13,6 +14,7 @@ export default function RoutesProvider() {
             <>
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Navigate to="/home" replace />} />
+                    <Route path="home" element={<Home />} />
                     <Route path="*" element={<></>} />
                 </Route>
             </>

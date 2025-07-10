@@ -28,6 +28,19 @@ h6 {
   line-height: inherit;
 }
 
+input {
+  background: none;
+  border: none;
+  outline: none;
+
+  font: inherit;
+
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+
 body {
   font-family: 'Public Sans', sans-serif;
   font-size: var(--text-md);
