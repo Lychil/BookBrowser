@@ -1,8 +1,11 @@
 :root {
     --bg-color: #F7FAFC;
-    --bg-button-color: #E8EDF5;
-    --main-color: #0D141C;
+    --bg-func-color: #E8EDF5;
+    --primary-color: #0D141C;
     --secondary-color: #4A739C;
+    --border-color: #E5E8EB;
+
+    --border-r-def: 8px;
 
     --container-width: 1200px;
 
