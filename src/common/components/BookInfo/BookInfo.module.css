@@ -1,0 +1,19 @@
+.bookInfo {
+    flex: 1;
+}
+
+.title {
+    font-size: var(--text-xl);
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.author {
+    font-size: var(--text-sm);
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+}
+
+.description {
+    color: var(--option-color);
+}
