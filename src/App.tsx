@@ -1,8 +1,8 @@
+import RoutesProvider from "@/router/RoutesProvider";
+
 function App() {
   return (
-    <div>
-      Sort by
-    </div>
+    <RoutesProvider />
   )
 }
 
