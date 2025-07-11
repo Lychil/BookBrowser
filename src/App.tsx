@@ -1,9 +1,12 @@
 import RoutesProvider from "@/router/RoutesProvider";
+import BooksProvider from "@/store/context/BooksContext";
 
 function App() {
   return (
-    <RoutesProvider />
+    <BooksProvider>
+      <RoutesProvider />
+    </BooksProvider>
   )
 }
 
-export default App
+export default App;
