@@ -6,4 +6,12 @@
     display: flex;
     flex-direction: column;
     row-gap: 15px;
+    margin-bottom: 25px;
+}
+
+.home__books {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    gap: 15px;
 }
