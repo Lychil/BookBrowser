@@ -1,11 +1,16 @@
-import type { BooksState, BooksAction, Book } from "@/common/types/types";
-import { useReducer } from "react";
+import { useCallback, useReducer } from "react";
 import { fetchBooks as apiFetchBooks } from "@/store/api/booksApi";
+import type { BooksState, BooksAction } from "@/common/types/types";
 
 const initialState: BooksState = {
     books: [],
+    filteredBooks: [],
     loading: false,
-    error: null
+    error: null,
+    filters: {
+        q: 'Harry Potter',
+        filter: undefined
+    }
 };
 
 const booksReducer = (state: BooksState, action: BooksAction): BooksState => {
@@ -14,33 +19,27 @@ const booksReducer = (state: BooksState, action: BooksAction): BooksState => {
             return { ...state, loading: true, error: null };
 
         case 'FETCH_BOOKS_SUCCESS':
-            return { ...state, loading: false, books: action.payload };
+            return {
+                ...state,
+                loading: false,
+                books: action.payload,
+                filteredBooks: action.payload
+            };
 
         case 'FETCH_BOOKS_FAILURE':
             return { ...state, loading: false, error: action.payload };
 
-        case 'ADD_BOOK':
+        case 'SET_SEARCH_QUERY':
             return {
                 ...state,
-                books: [...state.books, action.payload]
+                filters: {
+                    ...state.filters,
+                    q: action.payload
+                }
             };
 
-        case 'REMOVE_BOOK':
-            return {
-                ...state,
-                books: state.books.filter(book => book.id !== action.payload)
-            };
-
-        case 'UPDATE_BOOK':
-            return {
-                ...state,
-                books: state.books.map(book =>
-                    book.id === action.payload.id ? action.payload : book
-                )
-            };
-
-        case 'CLEAR_BOOKS':
-            return { ...state, books: [] };
+        case 'APPLY_FILTERS':
+            return { ...state, loading: true };
 
         default:
             return state;
@@ -50,7 +49,13 @@ const booksReducer = (state: BooksState, action: BooksAction): BooksState => {
 const useBooksReducer = () => {
     const [state, dispatch] = useReducer(booksReducer, initialState);
 
-    const fetchBooks = async (query: string = "Harry Potter") => {
+    const fetchBooks = useCallback(async (query: string) => {
+        if (query.trim() === '') {
+            dispatch({ type: 'FETCH_BOOKS_SUCCESS', payload: [] });
+            return;
+        }
+
+        dispatch({ type: 'APPLY_FILTERS' });
         dispatch({ type: 'FETCH_BOOKS_REQUEST' });
         try {
             const books = await apiFetchBooks(query);
@@ -61,31 +66,16 @@ const useBooksReducer = () => {
                 payload: error instanceof Error ? error.message : 'Ошибка загрузки'
             });
         }
-    };
+    }, []);
 
-    const addBook = (book: Book) => {
-        dispatch({ type: 'ADD_BOOK', payload: book });
-    };
-
-    const removeBook = (id: string) => {
-        dispatch({ type: 'REMOVE_BOOK', payload: id });
-    };
-
-    const updateBook = (book: Book) => {
-        dispatch({ type: 'UPDATE_BOOK', payload: book });
-    };
-
-    const clearBooks = () => {
-        dispatch({ type: 'CLEAR_BOOKS' });
-    };
+    const setSearchQuery = useCallback((query: string) => {
+        dispatch({ type: 'SET_SEARCH_QUERY', payload: query });
+    }, []);
 
     return {
         state,
         fetchBooks,
-        addBook,
-        removeBook,
-        updateBook,
-        clearBooks
+        setSearchQuery
     };
 };
 

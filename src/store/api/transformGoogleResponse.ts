@@ -5,7 +5,8 @@ export const transformGoogleBook = (googleBook: any): Book => {
         id: googleBook.id,
         title: googleBook.volumeInfo?.title || 'Без названия',
         author: googleBook.volumeInfo?.authors?.join(', ') || 'Автор не найден',
-        description: googleBook.volumeInfo?.description || 'Описание отсутствует'
+        description: googleBook.volumeInfo?.description || 'Описание отсутствует',
+        coverUrl: googleBook.volumeInfo?.imageLinks?.thumbnail || undefined
     };
 };
 
@@ -14,9 +15,8 @@ export const transformGoogleBookDetails = (googleBook: any): BookDetails => {
         title: googleBook.volumeInfo?.title || 'Без названия',
         author: googleBook.volumeInfo?.authors?.join(', ') || 'Автор не найден.',
         description: googleBook.volumeInfo?.description || 'Описание отсутствует',
+        coverUrl: googleBook.volumeInfo?.imageLinks?.thumbnail || undefined,
         publishDate: googleBook.volumeInfo?.publishedDate || 'Дата не найдена',
-        pageCount: googleBook.volumeInfo?.pageCount
-            ? `${googleBook.volumeInfo.pageCount} стр.`
-            : 'Информация не найдена.'
+        pageCount: googleBook.volumeInfo?.pageCount ? googleBook.volumeInfo.pageCount : -1
     };
 };

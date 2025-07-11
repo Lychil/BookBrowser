@@ -2,26 +2,30 @@ import styles from '@/common/components/BookCard/BookCard.module.css';
 import { Link } from 'react-router-dom';
 import MarkButton from '@/common/components/MarkButton/MarkButton';
 
-type BookCardProps = {
-    coverUrl: string;
+interface BookCardProps {
+    id: string;
+    coverUrl?: string;
     title: string;
     author: string;
     description: string;
 };
 
-export default function BookCard({ coverUrl, title, author, description }: BookCardProps) {
+export default function BookCard({ id, coverUrl, title, author, description }: BookCardProps) {
     return (
-        <Link to={""} className={styles.bookCard}>
+        <Link to={`/book/${id}`} className={styles.bookCard}>
             <div className={styles.favorite__button}>
                 <MarkButton />
             </div>
             <div className={styles.coverContainer}>
-                {/* <img
-                    src={coverUrl}
-                    alt={`Обложка книги "${title}"`}
-                    className={styles.coverImage}
-                /> */}
-                <div className={styles.placeholder}></div>
+                {coverUrl ?
+                    <img
+                        src={coverUrl}
+                        alt={`Обложка книги "${title}"`}
+                        className={styles.coverImage}
+                    />
+                    :
+                    <div className={styles.placeholder}></div>
+                }
             </div>
 
             <div className={styles.bookInfo}>

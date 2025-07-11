@@ -1,43 +1,44 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import styles from '@/pages/Book/Book.module.css';
 import BookInfo from '@/common/components/BookInfo/BookInfo';
 import BookMetaData from '@/common/components/BookMetaData/BookMetaData';
 import BackHome from '@/common/components/BackHome/BackHome';
+import type { BookDetails } from '@/common/types/types';
+import { fetchBookDetails } from '@/store/api/booksApi';
+import { useParams } from 'react-router-dom';
 
-type BookProps = {
-    coverUrl?: string;
-    title: string;
-    author: string;
-    publishDate: string;
-    pageCount: number;
-    description: string;
-};
+export default function Book() {
+    const { bookId } = useParams<{ bookId: string }>();
+    const [book, useBook] = useState<BookDetails>();
 
-export const Book: React.FC<BookProps> = ({
-    coverUrl,
-    title,
-    author,
-    publishDate,
-    pageCount,
-    description
-}) => {
+    useEffect(() => {
+        fetchBookDetails(bookId!).then(res => useBook(res));
+    }, []);
+
     return (
         <div className={styles.bookContainer}>
-            <div style={{marginBottom: "20px"}}>
-                <BackHome />
-            </div>
-            <div className={styles.topSection}>
-                {/* <div className={styles.coverWrapper}>
-                    <img
-                        src={coverUrl}
-                        alt={`Обложка книги "${title}"`}
-                        className={styles.cover}
-                    />
-                </div> */}
-                <div className={styles.placeholder}></div>
-                <BookInfo {...{ title, description, author }} />
-            </div>
-            <BookMetaData {...{ publishDate, pageCount }} />
+            {book &&
+                <>
+                    <div style={{ marginBottom: "20px" }}>
+                        <BackHome />
+                    </div>
+                    <div className={styles.topSection}>
+                        {book.coverUrl ?
+                            <div className={styles.coverWrapper}>
+                                <img
+                                    src={book.coverUrl}
+                                    alt={`Обложка книги "${book.title}"`}
+                                    className={styles.cover}
+                                />
+                            </div>
+                            :
+                            <div className={styles.placeholder}></div>
+                        }
+                        <BookInfo title={book.title} description={book.description} author={book.author} />
+                    </div>
+                    <BookMetaData publishDate={book.publishDate} pageCount={book.pageCount} />
+                </>
+            }
         </div>
     );
 };

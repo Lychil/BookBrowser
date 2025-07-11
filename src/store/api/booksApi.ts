@@ -5,7 +5,7 @@ const API_KEY = "AIzaSyCbFKWXOxJ_5dxPSlp1AvOjG2Z-9cniuXA";
 
 export const fetchBooks = async (query: string): Promise<Book[]> => {
     const response = await fetch(
-        `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&key=${API_KEY}`
+        `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${API_KEY}`
     );
 
     if (!response.ok) throw new Error('Ошибка загрузки книг');
