@@ -1,0 +1,6 @@
+.backHome {
+    padding: 10px 16px;
+    border-radius: var(--border-r-def);
+
+    background-color: var(--bg-func-color);
+}
