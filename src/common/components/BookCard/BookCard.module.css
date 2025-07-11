@@ -1,4 +1,5 @@
 .bookCard {
+    position: relative;
     display: flex;
     gap: 10px;
     width: 100%;
@@ -12,7 +13,7 @@
     height: 235px;
     border-radius: var(--border-r-sm);
     overflow: hidden;
-    background-color: var(--bg-func-color);
+    background-color: var(--border-color);
 }
 
 
@@ -61,4 +62,18 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.favorite__button {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--border-r-def);
+
+    background-color: var(--bg-func-color);
 }

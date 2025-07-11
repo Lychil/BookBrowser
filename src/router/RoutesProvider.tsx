@@ -1,4 +1,5 @@
 import Layout from "@/common/components/Layout/Layout";
+import Favorites from "@/pages/Favorites/Favorites";
 import Home from "@/pages/Home/Home";
 import {
     createBrowserRouter,
@@ -15,6 +16,7 @@ export default function RoutesProvider() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Navigate to="/home" replace />} />
                     <Route path="home" element={<Home />} />
+                    <Route path="favorites" element={<Favorites />} />
                     <Route path="*" element={<></>} />
                 </Route>
             </>
