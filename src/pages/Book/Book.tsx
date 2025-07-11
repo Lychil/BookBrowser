@@ -2,6 +2,7 @@ import React from 'react';
 import styles from '@/pages/Book/Book.module.css';
 import BookInfo from '@/common/components/BookInfo/BookInfo';
 import BookMetaData from '@/common/components/BookMetaData/BookMetaData';
+import BackHome from '@/common/components/BackHome/BackHome';
 
 type BookProps = {
     coverUrl?: string;
@@ -22,6 +23,9 @@ export const Book: React.FC<BookProps> = ({
 }) => {
     return (
         <div className={styles.bookContainer}>
+            <div style={{marginBottom: "20px"}}>
+                <BackHome />
+            </div>
             <div className={styles.topSection}>
                 {/* <div className={styles.coverWrapper}>
                     <img
