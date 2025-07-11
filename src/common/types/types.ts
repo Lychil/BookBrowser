@@ -24,3 +24,7 @@ export type BooksAction =
     | { type: 'FETCH_BOOKS_SUCCESS'; payload: Book[] }
     | { type: 'FETCH_BOOKS_FAILURE'; payload: string }
     | { type: 'SELECT_BOOK'; payload: Book }
+    | { type: 'ADD_BOOK'; payload: Book }
+    | { type: 'REMOVE_BOOK'; payload: string }
+    | { type: 'UPDATE_BOOK'; payload: Book }
+    | { type: 'CLEAR_BOOKS' }
