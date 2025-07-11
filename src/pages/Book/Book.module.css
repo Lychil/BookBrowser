@@ -1,0 +1,46 @@
+.bookContainer {
+    padding-block: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.topSection {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 20px;
+}
+
+.coverWrapper {
+    flex-shrink: 0;
+}
+
+.cover {
+    width: 360px;
+    height: 500px;
+    object-fit: cover;
+    border-radius: var(--border-r-def);
+}
+
+.placeholder {
+    flex-shrink: 0;
+    width: 360px;
+    height: 500px;
+    border-radius: var(--border-r-def);
+    background-color: var(--border-color);
+}
+
+@media (max-width: 768px) {
+    .topSection {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .cover,
+    .placeholder {
+        width: 100%;
+        max-width: 360px;
+        height: auto;
+        aspect-ratio: 360/500;
+        margin: 0 auto;
+    }
+}

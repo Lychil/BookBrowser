@@ -1,0 +1,27 @@
+.metaData {
+    padding-top: 20px;
+}
+
+.metaTitle {
+    font-size: var(--text-lg);
+    font-size: 600;
+    margin-bottom: 20px;
+}
+
+.metaItems {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+}
+
+.metaItem {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--text-sm);
+    padding-top: 5px;
+    border-top: 1px solid var(--border-color);
+}
+
+.metaItem__title {
+    color: var(--secondary-color);
+}
