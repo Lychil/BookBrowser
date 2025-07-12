@@ -6,6 +6,7 @@ import BackHome from '@/common/components/BackHome/BackHome';
 import type { BookDetails } from '@/common/types/types';
 import { fetchBookDetails } from '@/store/api/booksApi';
 import { useParams } from 'react-router-dom';
+import MarkButton from '@/common/components/MarkButton/MarkButton';
 
 export default function Book() {
     const { bookId } = useParams<{ bookId: string }>();
@@ -25,6 +26,9 @@ export default function Book() {
                     <div className={styles.topSection}>
                         {book.coverUrl ?
                             <div className={styles.coverWrapper}>
+                                <div style={{position: "absolute", top: "10px", left: "10px"}}>
+                                    <MarkButton id={bookId!} />
+                                </div>
                                 <img
                                     src={book.coverUrl}
                                     alt={`Обложка книги "${book.title}"`}

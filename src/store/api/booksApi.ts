@@ -1,5 +1,5 @@
 import type { Book, BookDetails, GoogleBooksAccessType } from '@/common/types/types';
-import { transformGoogleBook, transformGoogleBookDetails } from './transformGoogleResponse';
+import { transformGoogleBook, transformGoogleBookDetails } from '@/store/api/transformGoogleResponse';
 
 const API_KEY = "AIzaSyCbFKWXOxJ_5dxPSlp1AvOjG2Z-9cniuXA";
 
@@ -36,4 +36,31 @@ export const fetchBookDetails = async (id: string): Promise<BookDetails> => {
     if (!response.ok) throw new Error('Ошибка загрузки книги');
     const data = await response.json();
     return transformGoogleBookDetails(data);
+};
+
+const bookCache = new Map<string, Book>();
+
+export const fetchFavoriteBooks = async (ids: string[]): Promise<Book[]> => {
+    if (!ids.length) return [];
+
+    try {
+        const uncachedIds = ids.filter(id => !bookCache.has(id));
+        const promises = uncachedIds.map(id =>
+            fetch(`https://www.googleapis.com/books/v1/volumes/${id}?key=${API_KEY}`)
+                .then(async (res) => {
+                    if (!res.ok) throw new Error(`Ошибка, статус: ${res.status}`);
+                    const data = await res.json();
+                    return transformGoogleBook(data);
+                })
+                .then(book => {
+                    bookCache.set(id, book);
+                    return book;
+                })
+        );
+
+        await Promise.all(promises);
+        return ids.map(id => bookCache.get(id)).filter(Boolean) as Book[];
+    } catch (error) {
+        return [];
+    }
 };
