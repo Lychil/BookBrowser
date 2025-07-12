@@ -8,13 +8,20 @@ interface BookCardProps {
     title: string;
     author: string;
     description: string;
+    onToggle?: () => void;
 };
 
-export default function BookCard({ id, coverUrl, title, author, description }: BookCardProps) {
+export default function BookCard({ id, coverUrl, title, author, description, onToggle }: BookCardProps) {
     return (
         <Link to={`/book/${id}`} className={styles.bookCard}>
-            <div className={styles.favorite__button}>
-                <MarkButton />
+            <div
+                className={styles.favorite__button}
+                onClick={(e) => {
+                    e.preventDefault();
+                    onToggle?.();
+                }}
+            >
+                <MarkButton id={id} onToggle={onToggle} />
             </div>
             <div className={styles.coverContainer}>
                 {coverUrl ?
