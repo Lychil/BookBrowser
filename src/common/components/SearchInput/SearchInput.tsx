@@ -11,8 +11,8 @@ export default function SearchInput() {
 
     useEffect(() => {
         setSearchQuery(debouncedValue);
-        fetchBooks(debouncedValue);
-    }, [debouncedValue, setSearchQuery, fetchBooks]);
+        fetchBooks(debouncedValue, state.filters.filter);
+    }, [debouncedValue, setSearchQuery, fetchBooks, state.filters.filter]);
 
     return (
         <div className={styles.search__container}>

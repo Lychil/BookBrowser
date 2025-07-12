@@ -1,12 +1,25 @@
-import type { Book, BookDetails } from '@/common/types/types';
+import type { Book, BookDetails, GoogleBooksAccessType } from '@/common/types/types';
 import { transformGoogleBook, transformGoogleBookDetails } from './transformGoogleResponse';
 
 const API_KEY = "AIzaSyCbFKWXOxJ_5dxPSlp1AvOjG2Z-9cniuXA";
 
-export const fetchBooks = async (query: string): Promise<Book[]> => {
-    const response = await fetch(
-        `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${API_KEY}`
-    );
+export const fetchBooks = async (
+    query: string,
+    filter?: GoogleBooksAccessType
+): Promise<Book[]> => {
+    let url = `https://www.googleapis.com/books/v1/volumes?key=${API_KEY}`;
+
+    if (query) {
+        url += `&q=${encodeURIComponent(query)}`;
+    } else {
+        url += "&q=Harry Potter";
+    }
+
+    if (filter) {
+        url += `&filter=${filter}`;
+    }
+
+    const response = await fetch(url);
 
     if (!response.ok) throw new Error('Ошибка загрузки книг');
     const data = await response.json();

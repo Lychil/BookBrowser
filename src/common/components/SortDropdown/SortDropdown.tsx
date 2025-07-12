@@ -1,29 +1,38 @@
 import { useState, useRef, useEffect } from 'react';
 import styles from '@/common/components/SortDropdown/SortDropdown.module.css';
 import arrowImg from "@/common/img/icons/arrow-bottom.svg";
+import { useBooks } from '@/store/context/BooksContext';
+import type { GoogleBooksAccessType } from '@/common/types/types';
 
 type FilterOption = {
-    value: string;
+    value: GoogleBooksAccessType | 'all';
     label: string;
 };
 
 const options: FilterOption[] = [
-    { value: 'e-books', label: 'электронные книги' },
-    { value: 'free-e-books', label: 'бесплатные электронные книги' },
-    { value: 'full-view', label: 'полный просмотр' },
-    { value: 'paid-e-books', label: 'платные электронные книги' },
-    { value: 'limited-view', label: 'ограниченный просмотр' },
+    { value: 'all', label: 'Без фильтрации' },
+    { value: 'ebooks', label: 'Электронные книги' },
+    { value: 'free-ebooks', label: 'Бесплатные' },
+    { value: 'full', label: 'Полный просмотр' },
+    { value: 'paid-ebooks', label: 'Платные' },
+    { value: 'partial', label: 'Ограниченный просмотр' },
 ];
 
 export default function FilterDropdown() {
+    const { state, setFilterType, fetchBooks } = useBooks();
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedOption, setSelectedOption] = useState<FilterOption | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
+
+    const selectedOption = options.find(opt =>
+        opt.value === (state.filters.filter || 'all')
+    ) || options[0];
 
     const toggleDropdown = () => setIsOpen(!isOpen);
 
     const handleOptionClick = (option: FilterOption) => {
-        setSelectedOption(option);
+        const filter = option.value === 'all' ? undefined : option.value;
+        setFilterType(filter);
+        fetchBooks(state.filters.q, filter);
         setIsOpen(false);
     };
 
@@ -46,10 +55,13 @@ export default function FilterDropdown() {
                 aria-haspopup="listbox"
                 aria-expanded={isOpen}
             >
-                {selectedOption ? selectedOption.label : 'Сортировать по'}
+                {selectedOption.label}
                 <img
                     src={arrowImg}
-                    style={{ transition: 'transform 0.3s ease', transform: isOpen ? 'rotate(-180deg)' : 'rotate(0)' }}
+                    style={{
+                        transition: 'transform 0.3s ease',
+                        transform: isOpen ? 'rotate(-180deg)' : 'rotate(0)'
+                    }}
                     alt="Статус выпадающего меню"
                 />
             </button>
@@ -62,7 +74,7 @@ export default function FilterDropdown() {
                             className={styles.dropdownItem}
                             onClick={() => handleOptionClick(option)}
                             role="option"
-                            aria-selected={selectedOption?.value === option.value}
+                            aria-selected={selectedOption.value === option.value}
                         >
                             {option.label}
                         </li>
@@ -71,4 +83,4 @@ export default function FilterDropdown() {
             )}
         </div>
     );
-};
+}

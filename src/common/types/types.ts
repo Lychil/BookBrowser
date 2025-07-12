@@ -33,4 +33,5 @@ export type BooksAction =
     | { type: 'FETCH_BOOKS_SUCCESS'; payload: Book[] }
     | { type: 'FETCH_BOOKS_FAILURE'; payload: string }
     | { type: 'SET_SEARCH_QUERY'; payload: string }
+    | { type: 'SET_FILTER_TYPE'; payload: GoogleBooksAccessType | undefined }
     | { type: 'APPLY_FILTERS' };

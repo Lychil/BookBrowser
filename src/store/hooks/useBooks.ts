@@ -1,6 +1,6 @@
 import { useCallback, useReducer } from "react";
 import { fetchBooks as apiFetchBooks } from "@/store/api/booksApi";
-import type { BooksState, BooksAction } from "@/common/types/types";
+import type { BooksState, BooksAction, GoogleBooksAccessType } from "@/common/types/types";
 
 const initialState: BooksState = {
     books: [],
@@ -38,6 +38,15 @@ const booksReducer = (state: BooksState, action: BooksAction): BooksState => {
                 }
             };
 
+        case 'SET_FILTER_TYPE':
+            return {
+                ...state,
+                filters: {
+                    ...state.filters,
+                    filter: action.payload
+                }
+            };
+
         case 'APPLY_FILTERS':
             return { ...state, loading: true };
 
@@ -49,16 +58,11 @@ const booksReducer = (state: BooksState, action: BooksAction): BooksState => {
 const useBooksReducer = () => {
     const [state, dispatch] = useReducer(booksReducer, initialState);
 
-    const fetchBooks = useCallback(async (query: string) => {
-        if (query.trim() === '') {
-            dispatch({ type: 'FETCH_BOOKS_SUCCESS', payload: [] });
-            return;
-        }
-
+    const fetchBooks = useCallback(async (query: string, filter?: GoogleBooksAccessType) => {
         dispatch({ type: 'APPLY_FILTERS' });
         dispatch({ type: 'FETCH_BOOKS_REQUEST' });
         try {
-            const books = await apiFetchBooks(query);
+            const books = await apiFetchBooks(query, filter);
             dispatch({ type: 'FETCH_BOOKS_SUCCESS', payload: books });
         } catch (error) {
             dispatch({
@@ -72,10 +76,15 @@ const useBooksReducer = () => {
         dispatch({ type: 'SET_SEARCH_QUERY', payload: query });
     }, []);
 
+    const setFilterType = useCallback((filterType: GoogleBooksAccessType | undefined) => {
+        dispatch({ type: 'SET_FILTER_TYPE', payload: filterType });
+    }, []);
+
     return {
         state,
         fetchBooks,
-        setSearchQuery
+        setSearchQuery,
+        setFilterType
     };
 };
 
