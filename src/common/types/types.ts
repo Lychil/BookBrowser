@@ -26,12 +26,21 @@ export interface BooksState {
     };
     loading: boolean;
     error: string | null;
+    pagination: {
+        currentPage: number;
+        totalItems: number;
+        maxResults: number;
+        hasMore: boolean;
+    };
 }
 
 export type BooksAction =
     | { type: 'FETCH_BOOKS_REQUEST' }
-    | { type: 'FETCH_BOOKS_SUCCESS'; payload: Book[] }
+    | { type: 'FETCH_BOOKS_SUCCESS'; payload: { books: Book[]; totalItems: number } }
     | { type: 'FETCH_BOOKS_FAILURE'; payload: string }
     | { type: 'SET_SEARCH_QUERY'; payload: string }
     | { type: 'SET_FILTER_TYPE'; payload: GoogleBooksAccessType | undefined }
-    | { type: 'APPLY_FILTERS' };
+    | { type: 'APPLY_FILTERS' }
+    | { type: 'LOAD_MORE_BOOKS_REQUEST' }
+    | { type: 'LOAD_MORE_BOOKS_SUCCESS'; payload: { books: Book[]; totalItems: number } }
+    | { type: 'RESET_PAGINATION' };

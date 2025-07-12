@@ -1,76 +1,63 @@
 import { useCallback, useReducer } from "react";
 import { fetchBooks as apiFetchBooks } from "@/store/api/booksApi";
-import type { BooksState, BooksAction, GoogleBooksAccessType } from "@/common/types/types";
-
-const initialState: BooksState = {
-    books: [],
-    filteredBooks: [],
-    loading: false,
-    error: null,
-    filters: {
-        q: 'Harry Potter',
-        filter: undefined
-    }
-};
-
-const booksReducer = (state: BooksState, action: BooksAction): BooksState => {
-    switch (action.type) {
-        case 'FETCH_BOOKS_REQUEST':
-            return { ...state, loading: true, error: null };
-
-        case 'FETCH_BOOKS_SUCCESS':
-            return {
-                ...state,
-                loading: false,
-                books: action.payload,
-                filteredBooks: action.payload
-            };
-
-        case 'FETCH_BOOKS_FAILURE':
-            return { ...state, loading: false, error: action.payload };
-
-        case 'SET_SEARCH_QUERY':
-            return {
-                ...state,
-                filters: {
-                    ...state.filters,
-                    q: action.payload
-                }
-            };
-
-        case 'SET_FILTER_TYPE':
-            return {
-                ...state,
-                filters: {
-                    ...state.filters,
-                    filter: action.payload
-                }
-            };
-
-        case 'APPLY_FILTERS':
-            return { ...state, loading: true };
-
-        default:
-            return state;
-    }
-};
+import { booksReducer, initialState } from "@/store/reducers/bookReducer";
+import type { GoogleBooksAccessType } from "@/common/types/types";
 
 const useBooksReducer = () => {
     const [state, dispatch] = useReducer(booksReducer, initialState);
 
+    const loadMoreBooks = useCallback(async () => {
+        if (!state.pagination.hasMore || state.loading) return;
+
+        dispatch({ type: 'LOAD_MORE_BOOKS_REQUEST' });
+        try {
+            const startIndex = (state.pagination.currentPage + 1) * state.pagination.maxResults;
+            const response = await apiFetchBooks(
+                state.filters.q,
+                state.filters.filter,
+                startIndex,
+                state.pagination.maxResults
+            );
+
+            dispatch({
+                type: 'LOAD_MORE_BOOKS_SUCCESS',
+                payload: {
+                    books: response.items,
+                    totalItems: response.totalItems
+                }
+            });
+        } catch (error) {
+            dispatch({
+                type: 'FETCH_BOOKS_FAILURE',
+                payload: error instanceof Error ? error.message : 'Ошибка загрузки книг'
+            });
+        }
+    }, [state]);
+
     const fetchBooks = useCallback(async (query: string, filter?: GoogleBooksAccessType) => {
-        dispatch({ type: 'APPLY_FILTERS' });
         dispatch({ type: 'FETCH_BOOKS_REQUEST' });
         try {
-            const books = await apiFetchBooks(query, filter);
-            dispatch({ type: 'FETCH_BOOKS_SUCCESS', payload: books });
+            const response = await apiFetchBooks(
+                query,
+                filter,
+                0,
+                state.pagination.maxResults
+            );
+
+            dispatch({
+                type: 'FETCH_BOOKS_SUCCESS',
+                payload: {
+                    books: response.items,
+                    totalItems: response.totalItems
+                }
+            });
         } catch (error) {
             dispatch({
                 type: 'FETCH_BOOKS_FAILURE',
                 payload: error instanceof Error ? error.message : 'Ошибка загрузки'
             });
         }
-    }, []);
+    }, [state.pagination.maxResults]);
 
     const setSearchQuery = useCallback((query: string) => {
         dispatch({ type: 'SET_SEARCH_QUERY', payload: query });
@@ -84,7 +71,8 @@ const useBooksReducer = () => {
         state,
         fetchBooks,
         setSearchQuery,
-        setFilterType
+        setFilterType,
+        loadMoreBooks
     };
 };
 
