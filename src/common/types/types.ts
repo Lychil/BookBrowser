@@ -44,3 +44,11 @@ export type BooksAction =
     | { type: 'LOAD_MORE_BOOKS_REQUEST' }
     | { type: 'LOAD_MORE_BOOKS_SUCCESS'; payload: { books: Book[]; totalItems: number } }
     | { type: 'RESET_PAGINATION' };
+
+
+export enum ToastMessagesEnum {
+    ERROR_API = "Произошла ошибка при загрузке. Попробуйте позже:(",
+    EMPTY_SEARCH = "По вашему запросу ничего не нашлось. Попробуйте изменить параметры.",
+    SUCCESS_ADD_MARK = "Книга успешно добавлена в избранное.",
+    SUCCESS_DELETE_MARK = "Книга успешно удалена из избранного."
+}

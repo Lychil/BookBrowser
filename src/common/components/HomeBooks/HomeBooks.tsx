@@ -1,12 +1,26 @@
 import styles from "@/common/components/HomeBooks/HomeBooks.module.css";
 import { useBooks } from "@/store/context/BooksContext";
 import BookCard from "@/common/components/BookCard/BookCard";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import useInfiniteScroll from "@/common/hooks/useInfiniteScroll";
+import { toast } from "react-toastify";
+import { ToastMessagesEnum } from "@/common/types/types";
 
 export default function HomeBooks() {
     const { state, loadMoreBooks } = useBooks();
     const containerRef = useRef<HTMLDivElement>(null);
+    const toastShownRef = useRef(false);
+
+    useEffect(() => {
+        if (!state.loading && !toastShownRef.current && state.filteredBooks.length === 0) {
+            toast.info(ToastMessagesEnum.EMPTY_SEARCH);
+            toastShownRef.current = true;
+        }
+
+        return () => {
+            toastShownRef.current = false;
+        };
+    }, [state.loading, state.error, state.filteredBooks]);
 
     const { triggerRef } = useInfiniteScroll({
         onLoadMore: loadMoreBooks,
@@ -20,7 +34,7 @@ export default function HomeBooks() {
     if (state.error)
         return <div className={styles.error}>Ошибка: {state.error}</div>
     if (state.filteredBooks.length === 0 && !state.loading)
-        return <div>Книги не найдены. Попробуйте изменить параметры поиска.</div>;
+        return <div>Книги не найдены. Попробуйте изменить параметры поиска.</div>
 
     return (
         <div className={styles.home__books} ref={containerRef}>

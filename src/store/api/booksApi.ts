@@ -1,5 +1,6 @@
-import type { Book, BookDetails, GoogleBooksAccessType } from '@/common/types/types';
+import { ToastMessagesEnum, type Book, type BookDetails, type GoogleBooksAccessType } from '@/common/types/types';
 import { transformGoogleBook, transformGoogleBookDetails } from '@/store/api/transformGoogleResponse';
+import { toast } from 'react-toastify';
 
 const API_KEY = "AIzaSyCbFKWXOxJ_5dxPSlp1AvOjG2Z-9cniuXA";
 
@@ -19,7 +20,10 @@ export const fetchBooks = async (
     }
 
     const response = await fetch(url);
-    if (!response.ok) throw new Error('Ошибка загрузки книг');
+    if (!response.ok) {
+        toast.error(ToastMessagesEnum.ERROR_API);
+        throw new Error('Ошибка загрузки книг');
+    }
     const data = await response.json();
 
     return {
@@ -33,7 +37,10 @@ export const fetchBookDetails = async (id: string): Promise<BookDetails> => {
         `https://www.googleapis.com/books/v1/volumes/${id}?key=${API_KEY}`
     );
 
-    if (!response.ok) throw new Error('Ошибка загрузки книги');
+    if (!response.ok) {
+        toast.error(ToastMessagesEnum.ERROR_API);
+        throw new Error('Ошибка загрузки книги');
+    }
     const data = await response.json();
     return transformGoogleBookDetails(data);
 };
@@ -61,6 +68,7 @@ export const fetchFavoriteBooks = async (ids: string[]): Promise<Book[]> => {
         await Promise.all(promises);
         return ids.map(id => bookCache.get(id)).filter(Boolean) as Book[];
     } catch (error) {
+        toast.error(ToastMessagesEnum.ERROR_API);
         return [];
     }
 };

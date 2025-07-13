@@ -1,5 +1,7 @@
 import MarkIcon from "@/common/components/MarkIcon/MarkIcon";
+import { ToastMessagesEnum } from "@/common/types/types";
 import { useEffect, useState } from "react";
+import { toast } from 'react-toastify';
 
 interface MarkButtonProps {
     id: string;
@@ -24,6 +26,8 @@ export default function MarkButton({ id, onToggle = () => { } }: MarkButtonProps
             : [...favorites, id];
 
         localStorage.setItem('favorites', JSON.stringify(newFavorites));
+        if (isFavorite) toast.success(ToastMessagesEnum.SUCCESS_DELETE_MARK)
+        else toast.success(ToastMessagesEnum.SUCCESS_ADD_MARK)
         setIsFavorite(!isFavorite);
         onToggle();
     };
